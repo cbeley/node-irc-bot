@@ -2,8 +2,7 @@
  * Twitter Plugin!
  */
 
-var util = require("util"),
-    Twit = require("twit"),
+var Twit = require("twit"),
     config = require("../botConfig.json"),
     _ = require("lodash"),
     messageHistory = {},
@@ -12,24 +11,24 @@ var util = require("util"),
 var twit = new Twit(config.pluginConfig.twitter);
 
 function postTweet(message, cb) {
-    if (message.substr(7).length > 140) {
-      cb(new Error("Too Long"));
+  if (message.substr(7).length > 140) {
+    cb(new Error("Too Long"));
+    return;
+  }
+
+  twit.post("statuses/update", {status: message}, function (error, reply) {
+    if (error) {
+      cb("Something went wrong.  Here is the error though: " + message);
       return;
     }
 
-    twit.post("statuses/update", {status: message}, function(error, reply) {
-      if (error) {
-        cb("Something went wrong.  Here is the error though: " + message);
-        return;
-      }
-
-      console.log(JSON.stringify(reply));
-      cb(null);
-    });
+    console.log(JSON.stringify(reply));
+    cb(null);
+  });
 }
 
 function postTweetAndTellUser(client, from, to, message) {
-  postTweet(message, function(error) {
+  postTweet(message, function (error) {
     if (error) {
       if (error.message === "Too Long") {
         client.say(to, "Because Twitter is stupid, you can't make a post that is more than 140 characters.  So, sorry, I can't post that for you, " + from);

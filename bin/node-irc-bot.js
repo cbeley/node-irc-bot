@@ -40,7 +40,7 @@ client = new irc.Client(config.connectionConfig.network, config.connectionConfig
 
 
 /******* Event Listeners ***********/
-client.addListener("message#", function(from, to, text) {
+client.addListener("message#", function (from, to, text) {
   console.log(from + " (" + to + "): " + text);
 
   _.each(plugins, function (plugin) {
@@ -48,6 +48,6 @@ client.addListener("message#", function(from, to, text) {
   });
 });
 
-client.addListener("error", function(message) {
+client.addListener("error", function (message) {
   console.log("error: ", message);
 });

@@ -1,6 +1,6 @@
 {
     "connectionConfig": {
-        "userName": "cbeleyBot",
+        "userName": "bot",
         "realName": "Not Telling...",
         "port": 6667,
         "autoRejoin": true,
@@ -12,6 +12,16 @@
     },
     "plugins": [],
     "defaultPlugins": [
-        "ping"
-    ]
+        "ping",
+        "twitter"
+    ],
+    "pluginConfig": {
+        "twitter": {
+            "consumer_key": "",
+            "consumer_secret" : "",
+            "access_token" : "",
+            "access_token_secret": "",
+            "twitterUrl": "https://twitter.com/username"
+        }
+    }
 }

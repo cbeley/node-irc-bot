@@ -1,0 +1,17 @@
+{
+    "connectionConfig": {
+        "userName": "cbeleyBot",
+        "realName": "Not Telling...",
+        "port": 6667,
+        "autoRejoin": true,
+        "autoConnect": true,
+        "floodProtection": true,
+        "floodProtectionDelay": 500,
+        "network": "chat.freenode.net",
+        "channels": ["#cbeleybot"]
+    },
+    "plugins": [],
+    "defaultPlugins": [
+        "ping"
+    ]
+}

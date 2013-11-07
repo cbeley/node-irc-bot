@@ -1,0 +1,34 @@
+{
+  "name": "node-irc-bot",
+  "description": "(pending)",
+  "version": "0.0.1",
+  "main": "./node-irc-bot.js",
+  "author": {
+    "name": "Christopher Beley",
+    "email": "cbeley@fluid.com"
+  },
+  "keywords": [],
+  "licenses": {
+    "type": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/YOUR_LOGIN/node-irc-bot.git"
+  },
+  "bugs": {
+    "web": "http://github.com/YOUR_LOGIN/node-irc-bot/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-mocha": "~0.4.1",
+    "grunt-notify": "~0.2.15",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-release": "~0.6.0",
+    "expect.js": "~0.2.0"
+  },
+  "dependencies": {
+    "irc": "~0.3.6",
+    "lodash": "~2.2.1"
+  }
+}

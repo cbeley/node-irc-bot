@@ -9,6 +9,10 @@ describe("Ping Pong Plugin", function () {
         expect(message).to.be("PONG!");
         done();
       }
+    }, function (error) {
+      if (error) {
+        throw error;
+      }
     });
   });
 
@@ -17,8 +21,12 @@ describe("Ping Pong Plugin", function () {
       say: function () {
         throw new Error("say was called when it should not have been called!");
       }
-    });
+    }, function (error) {
+      if (error) {
+        throw error;
+      }
 
-    done();
+      done();
+    });
   });
 });

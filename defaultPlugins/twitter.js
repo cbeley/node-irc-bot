@@ -8,7 +8,7 @@ var Twit = require("twit"),
     messageHistory = {},
     twit;
 
-var twit = new Twit(config.pluginConfig.twitter);
+twit = new Twit(config.pluginConfig.twitter);
 
 function postTweet(message, cb) {
   if (message.substr(7).length > 140) {
@@ -44,7 +44,7 @@ function postTweetAndTellUser(client, from, to, message) {
   });
 }
 
-function twitter(from, to, text, client) {
+function twitter(from, to, text, client, next) {
   if (text.substr(0, 7) === "!tweet ") {
     postTweetAndTellUser(client, from, to, text.substr(7));
   }
@@ -64,6 +64,8 @@ function twitter(from, to, text, client) {
 
     messageHistory[to][from] = text;
   }
+
+  next(null);
 }
 
 module.exports = twitter;

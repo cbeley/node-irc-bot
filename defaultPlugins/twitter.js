@@ -73,7 +73,7 @@ function handleAvailableCommands(from, to, text, client) {
     postTweetAndTellUser(client, from, to, text.substr(7), sendPMonly);
   }
   else if (text.substr(0, 11) === "!tweetUser ") {
-    if (_.isUndefined(messageHistory[to][text.substr(11)])) {
+    if (_.isUndefined(messageHistory[to]) || _.isUndefined(messageHistory[to][text.substr(11)])) {
       client.say(from, from + ", you are stupid!  That user has never typed anything since I last was turned on!");
     }
     else {

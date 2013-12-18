@@ -8,7 +8,9 @@
         "floodProtection": true,
         "floodProtectionDelay": 500,
         "network": "chat.freenode.net",
-        "channels": ["#cbeleybot"]
+        "channels": ["#cbeleybot"],
+        "adminUser": "user who can do admin commands here",
+        "dbFile" : "path/to/where/you/want/the/db/folder/to/go"
     },
     "plugins": [],
     "defaultPlugins": [
@@ -21,7 +23,9 @@
             "consumer_secret" : "",
             "access_token" : "",
             "access_token_secret": "",
-            "twitterUrl": "https://twitter.com/username"
+            "twitterUrl": "https://twitter.com/username",
+            "useWhitelist": "true",
+            "publicNoticeThrottle": 5000
         }
     }
 }

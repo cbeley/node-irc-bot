@@ -1,10 +1,10 @@
 #!/bin/env node
 
 var irc = require("irc"),
-        _ = require("lodash"),
-        async = require("async"),
-        config = require("../botConfig.json"),
-        connectionSettings, client, plugins = [];
+    _ = require("lodash"),
+    async = require("async"),
+    config = require("../botConfig.json"),
+    connectionSettings, client, plugins = [];
 
 /****** Instantiate our Plugins *******/
 // Default Plugins
@@ -42,6 +42,8 @@ client = new irc.Client(config.connectionConfig.network, config.connectionConfig
 
 /******* Event Listeners ***********/
 client.addListener("message#", function (from, to, text) {
+  var currentPlugin;
+
   console.log(from + " (" + to + "): " + text);
 
   // Execute each plugin, but wait until it has finished.  If a plugin has not called back,
@@ -49,6 +51,8 @@ client.addListener("message#", function (from, to, text) {
   // Plugins are executed in the order in which they are defined in the configuration file, so order does matter.
   // In a nutshell, this all works very similiarly to Connect's middleware.
   async.eachSeries(plugins, function (plugin, cb) {
+    currentPlugin = plugin;
+
     plugin(from, to, text, client, cb);
   },
   function (error) {
@@ -56,7 +60,7 @@ client.addListener("message#", function (from, to, text) {
       console.log("Plugin Error:  ");
       console.log(error.stack);
       console.log("De-Acivating Plug-In...");
-      plugins = _.without(plugin);
+      plugins = _.without(plugins, currentPlugin);
     }
   });
 });

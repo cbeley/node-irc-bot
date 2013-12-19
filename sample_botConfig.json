@@ -10,7 +10,8 @@
         "network": "chat.freenode.net",
         "channels": ["#cbeleybot"],
         "adminUser": "user who can do admin commands here",
-        "dbFile" : "path/to/where/you/want/the/db/folder/to/go"
+        "dbFile" : "path/to/where/you/want/the/db/folder/to/go",
+        "commandPrefix": "!"
     },
     "plugins": [],
     "defaultPlugins": [

@@ -13,12 +13,7 @@ var Twit = require("twit"),
 twit = new Twit(config.pluginConfig.twitter);
 
 function updateDb() {
-  if (allowList.length !== 0) {
-    db.put("twitterAllowList", allowList);
-  }
-  else {
-    db.del("twitterAllowList");
-  }
+  db.put("twitterAllowList", JSON.stringify(allowList));
 }
 
 function postTweet(message, cb) {
@@ -151,7 +146,7 @@ function initAllowList(cb) {
         return;
       }
 
-      allowList = value;
+      allowList = JSON.parse(value);
       cb(null);
     });
   }

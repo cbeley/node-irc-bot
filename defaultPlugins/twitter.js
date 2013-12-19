@@ -6,6 +6,7 @@ var Twit = require("twit"),
     config = require("../botConfig.json"),
     _ = require("lodash"),
     db = require("../lib/db.js"),
+    utils = require("../lib/utils.js")(config),
     messageHistory = {},
     twit, allowList = null, lastPublicNotice = null;
 
@@ -59,65 +60,69 @@ function postTweetAndTellUser(client, from, to, message, sendPMonly) {
 }
 
 function handleAvailableCommands(from, to, text, client) {
-  var sendPMonly = true;
+  var cmds, sendPMonly = true;
 
   if (!lastPublicNotice || (((Date.now() - lastPublicNotice) > config.pluginConfig.twitter.publicNoticeThrottle))) {
     sendPMonly = false;
   }
 
-  if (config.pluginConfig.twitter.useWhitelist && !_.contains(allowList, from) && (from !== config.connectionConfig.adminUser)) {
-    client.say(from, "Sorry, you arn't on the list of approved users for using twitter.  You should speak with " + config.connectionConfig.adminUser);
-    return;
-  }
-  else if (text.substr(0, 7) === "!tweet ") {
-    postTweetAndTellUser(client, from, to, text.substr(7), sendPMonly);
-  }
-  else if (text.substr(0, 11) === "!tweetUser ") {
-    if (_.isUndefined(messageHistory[to]) || _.isUndefined(messageHistory[to][text.substr(11)])) {
-      client.say(from, from + ", you are stupid!  That user has never typed anything since I last was turned on!");
-    }
-    else {
-      postTweetAndTellUser(client, from, to, messageHistory[to][text.substr(11)], sendPMonly);
-    }
-  }
-  else if (text.substr(0, 9) === "!addUser ") {
-    if (from !== config.connectionConfig.adminUser) {
-      client.say(from, "Sorry, only my admin, " + config.connectionConfig.adminUser + ", can do that!");
-      return;
-    }
+  cmds = {
+    tweet: function () {
+      postTweetAndTellUser(client, from, to, text.substr(7), sendPMonly);
+    },
 
-    allowList.push(text.substr(9));
-    updateDb();
-    client.say(to, text.substr(9) + " can now send tweets using !tweet and !tweetUser");
-    return;
-  }
-  else if (text.substr(0, 12) === "!removeUser ") {
-    if (from !== config.connectionConfig.adminUser) {
-      client.say(from, "Sorry, only my admin, " + config.connectionConfig.adminUser + ", can do that!");
-      return;
-    }
+    tweetUser: function () {
+      if (_.isUndefined(messageHistory[to]) || _.isUndefined(messageHistory[to][text.substr(11)])) {
+        client.say(from, from + ", you are stupid!  That user has never typed anything since I last was turned on!");
+      }
+      else {
+        postTweetAndTellUser(client, from, to, messageHistory[to][text.substr(11)], sendPMonly);
+      }
+    },
 
-    allowList = _.without(allowList, text.substr(12));
-    updateDb();
-    client.say(to, text.substr(12) + " can no longer send tweets. :-(");
-    return;
-  }
-  else if (text.substr(0, 16) === "!getAllowedUsers") {
-    if (from !== config.connectionConfig.adminUser) {
-      client.say(from, "Sorry, only my admin, " + config.connectionConfig.adminUser + ", can do that!");
-      return;
-    }
+    addUser: function () {
+      if (from !== config.connectionConfig.adminUser) {
+        client.say(from, "Sorry, only my admin, " + config.connectionConfig.adminUser + ", can do that!");
+        return;
+      }
 
-    client.say(from, "Allowed Users: " + JSON.stringify(allowList));
-  }
-  else {
+      allowList.push(text.substr(9));
+      updateDb();
+      client.say(to, text.substr(9) + " can now send tweets using !tweet and !tweetUser");
+      return;
+    },
+
+    removeUser: function () {
+      if (from !== config.connectionConfig.adminUser) {
+        client.say(from, "Sorry, only my admin, " + config.connectionConfig.adminUser + ", can do that!");
+        return;
+      }
+
+      allowList = _.without(allowList, text.substr(12));
+      updateDb();
+      client.say(to, text.substr(12) + " can no longer send tweets. :-(");
+      return;
+    },
+
+    getAllowedUsers: function () {
+      if (from !== config.connectionConfig.adminUser) {
+        client.say(from, "Sorry, only my admin, " + config.connectionConfig.adminUser + ", can do that!");
+        return;
+      }
+
+      client.say(from, "Allowed Users: " + JSON.stringify(allowList));
+    }
+  };
+
+  utils.mapCmds(cmds, function () {
+    // Default/no matching command
     // Log the messages for the tweet last post feature
     if (_.isUndefined(messageHistory[to])) {
       messageHistory[to] = {};
     }
 
     messageHistory[to][from] = text;
-  }
+  });
 }
 
 function initAllowList(cb) {

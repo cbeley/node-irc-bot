@@ -59,6 +59,15 @@ function postTweetAndTellUser(client, from, to, message, sendPMonly) {
   });
 }
 
+function userCanUseTwitter(from, client) {
+  if (config.pluginConfig.twitter.useWhitelist && !_.contains(allowList, from) && (from !== config.connectionConfig.adminUser)) {
+    client.say(from, "Sorry, you arn't on the list of approved users for using twitter. You should speak with " + config.connectionConfig.adminUser);
+    return false;
+  }
+
+  return true;
+}
+
 function handleAvailableCommands(from, to, text, client) {
   var cmds, sendPMonly = true;
 
@@ -68,15 +77,19 @@ function handleAvailableCommands(from, to, text, client) {
 
   cmds = {
     tweet: function () {
-      postTweetAndTellUser(client, from, to, text.substr(7), sendPMonly);
+      if (userCanUseTwitter(from, client)) {
+        postTweetAndTellUser(client, from, to, text.substr(7), sendPMonly);
+      }
     },
 
     tweetUser: function () {
-      if (_.isUndefined(messageHistory[to]) || _.isUndefined(messageHistory[to][text.substr(11)])) {
-        client.say(from, from + ", you are stupid!  That user has never typed anything since I last was turned on!");
-      }
-      else {
-        postTweetAndTellUser(client, from, to, messageHistory[to][text.substr(11)], sendPMonly);
+      if (userCanUseTwitter(from, client)) {
+        if (_.isUndefined(messageHistory[to]) || _.isUndefined(messageHistory[to][text.substr(11)])) {
+          client.say(from, from + ", you are stupid!  That user has never typed anything since I last was turned on!");
+        }
+        else {
+          postTweetAndTellUser(client, from, to, messageHistory[to][text.substr(11)], sendPMonly);
+        }
       }
     },
 
@@ -114,7 +127,7 @@ function handleAvailableCommands(from, to, text, client) {
     }
   };
 
-  utils.mapCmds(cmds, function () {
+  utils.mapCmds(text, cmds, function () {
     // Default/no matching command
     // Log the messages for the tweet last post feature
     if (_.isUndefined(messageHistory[to])) {
